@@ -182,6 +182,7 @@ class TicketWindow
 
         customerQueue.push(customer);
         tempQueue.push(customer);
+        saveQueueToFile();
         cout << customer.name << " has been added to the queue with the following tickets:" << endl;
         cout << "Silver Tickets (Rs. 10): " << ST << endl;
         cout << "Gold Tickets (Rs. 15): " << GT << endl;
@@ -213,7 +214,6 @@ class TicketWindow
                 cout << "Total Price for Refreshments: Rs. " << customer.refreshmentsPrice << endl;
             }
             cout << " and paid using " << customer.paymentMethod << ". Left the queue." << endl;
-            saveQueueToFile();
             customerQueue.pop();
         }
         else
@@ -222,12 +222,13 @@ class TicketWindow
 
     void displayQueue()
     {
-        if (!tempQueue.empty())
+        queue<Customer> TempQueue = tempQueue;
+        if (!TempQueue.empty())
         {
             cout << "Customers in the queue:" << endl;
-            while (!tempQueue.empty())
+            while (!TempQueue.empty())
             {
-                Customer customer = tempQueue.front();
+                Customer customer = TempQueue.front();
                 cout << customer.name << " - " << customer.ticketType << " tickets (Rs. " << customer.ticketPrice << ")";
                 if (!customer.refreshments.empty())
                 {
@@ -238,7 +239,7 @@ class TicketWindow
                     cout << "Total Price for Refreshments: Rs. " << customer.refreshmentsPrice << endl;
                 }
                 cout << " - Paid with " << customer.paymentMethod << endl;
-                tempQueue.pop();
+                TempQueue.pop();
             }
         }
         else
@@ -268,6 +269,7 @@ class TicketWindow
     {
         ifstream inFile("customerQueue.txt");
         string line;
+        queue<Customer> TempQueue = tempQueue;
         while (getline(inFile, line))
         {
             Customer customer;
@@ -281,7 +283,7 @@ class TicketWindow
                 customer.refreshments.push_back(refreshment);
             inFile >> customer.refreshmentsPrice;
             inFile.ignore(); // ignore newline
-            tempQueue.push(customer);
+            TempQueue.push(customer);
         }
         inFile.close();
     }
